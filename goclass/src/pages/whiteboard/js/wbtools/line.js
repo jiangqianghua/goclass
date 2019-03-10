@@ -31,5 +31,7 @@ export class Line extends Shape {
 
     this.context.stroke()
     this.context.restore()
+
+    super.renderSelected()
   }
 }

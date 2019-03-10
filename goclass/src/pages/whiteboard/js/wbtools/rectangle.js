@@ -37,10 +37,11 @@ export class Rectangle extends Shape {
     console.log('rectange')
     this.context.save()
     this.context.beginPath()
-    Shape.prototype.render.apply(this, arguments)
+    // Shape.prototype.render.apply(this, arguments)
+    super.render()
     this.context.rect(this.nx, this.ny, this.width, this.height)
     this.context.stroke()
     this.context.restore()
+    this.renderSelected()
   }
 }
-

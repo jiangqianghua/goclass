@@ -51,5 +51,6 @@ export class Arrow extends Shape {
     super.render()
     this.context.stroke()
     this.context.restore()
+    super.renderSelected()
   }
 }

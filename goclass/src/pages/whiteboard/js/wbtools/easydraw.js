@@ -15,7 +15,7 @@ export class EasyDraw {
   constructor (stage) {
     this.canvas = document.getElementById(stage)
     this.context = this.canvas.getContext('2d')
-    this.children = new Array()
+    this.children = []
     this.wbHandler = new WBHandler({'canvas': this.canvas})
     this.drawType = 4
     this.curShape = null
@@ -86,6 +86,10 @@ export class EasyDraw {
     // this.context.draw()
   }
 
+  setShapeType (type) {
+    this.drawType = type
+  }
+
   createShape (x, y) {
     if (this.drawType === 0) {
       let line = new Line({
@@ -114,10 +118,10 @@ export class EasyDraw {
     } else if (this.drawType === 2) {
       let circle = new Circle({
         id: '1',
-        cx: x,
-        cy: y,
-        endX: x,
-        endY: y,
+        x: x,
+        y: y,
+        moveX: x,
+        moveY: y,
         lineWidth: 3,
         strokeStyle: 'red'
       })

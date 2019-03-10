@@ -5,12 +5,24 @@ export class Curve extends Shape {
   constructor (property) {
     super(property)
     this.datas = []
+    this.x = this.y = 0
+    this.moveX = this.moveY = 0
     if (property) {
       this.datas = property.datas || []
+      this.x = property.x || this.datas[0].x
+      this.y = property.y || this.datas[0].y
+      this.moveX = property.moveX || this.datas[0].x
+      this.moveY = property.moveY || this.datas[0].y
     }
   }
 
   updateData (params) {
+    this.x = this.x > params.x ? params.x : this.x
+    this.y = this.y > params.y ? params.y : this.y
+
+    this.moveX = this.moveX < params.x ? params.x : this.moveX
+    this.moveY = this.moveY < params.y ? params.y : this.moveY
+    // console.log('updateData ' + this.x + ':' + this.y + ' --- ' + this.moveX + ':' + this.moveY)
     this.datas.push(params)
   }
 
@@ -28,5 +40,6 @@ export class Curve extends Shape {
     super.render()
     this.context.stroke()
     this.context.restore()
+    super.renderSelected()
   }
 }

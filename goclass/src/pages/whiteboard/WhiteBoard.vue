@@ -1,13 +1,19 @@
 <template>
-  <div>
-    <button @click="test">Click</button>
-    <canvas id="stage" class="stage" width="600" height="400"></canvas>
+  <div class="wb-container">
+    <div class="tools">
+      <button @click="btnClick(0)">直线</button>
+      <button @click="btnClick(4)">矩形</button>
+      <button @click="btnClick(2)">圆形</button>
+      <button @click="btnClick(3)">线条</button>
+      <button @click="btnClick(1)">箭头</button>
+    </div>
+    <div class="canvas-container">
+      <canvas id="stage" class="stage" width="600" height="400"></canvas>
+    </div>
   </div>
 </template>
 
 <script>
-import {Arrow} from './js/wbtools/test.js'
-import {Line} from './js/wbtools/line'
 import {EasyDraw} from './js/wbtools/easydraw'
 
 export default {
@@ -27,24 +33,16 @@ export default {
         this.easyDraw = new EasyDraw('stage')
       }
     },
-    test: function () {
-      let line = new Line({
-        id: '1',
-        x: Math.ceil(Math.random() * 600),
-        y: Math.ceil(Math.random() * 400),
-        moveX: Math.ceil(Math.random() * 600),
-        moveY: Math.ceil(Math.random() * 400),
-        lineWidth: Math.ceil(Math.random() * 10),
-        strokeStyle: 'red'
-      })
-
-      this.easyDraw.addChild(line)
-      this.easyDraw.update()
+    btnClick: function (type) {
+      this.easyDraw.setShapeType(type)
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="stylus" scoped>
+  .wb-container
+    display flex
+    flex-display row
 
 </style>

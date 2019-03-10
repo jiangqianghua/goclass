@@ -28,8 +28,6 @@ export default {
       }
     },
     test: function () {
-      let arrow = new Arrow()
-      arrow.printlog()
       let line = new Line({
         id: '1',
         x: Math.ceil(Math.random() * 600),

@@ -14,11 +14,21 @@ export class Line extends Shape {
       this.moveX = property.moveX || this.moveX
       this.moveY = property.moveY || this.moveY
     }
+    this.computerPostion()
   }
 
   updateData (params) {
     this.moveX = params.x
     this.moveY = params.y
+    this.computerPostion()
+  }
+
+  computerPostion () {
+    // this.x = this.x > this.moveX ? this.moveX : this.x
+    // this.y = this.y > this.moveY ? this.moveY : this.y
+    //
+    // this.moveX = this.x < this.moveX ? this.moveX : this.x
+    // this.moveY = this.y < this.moveY ? this.moveY : this.y
   }
 
   render () {

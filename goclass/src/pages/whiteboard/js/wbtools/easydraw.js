@@ -11,6 +11,8 @@ import {Arrow} from './arrow'
 import {Circle} from './circle'
 import {Curve} from './curve'
 import {Rectangle} from './rectangle'
+import {SelectBorder} from './selectborder'
+
 export class EasyDraw {
   constructor (stage) {
     this.canvas = document.getElementById(stage)
@@ -19,6 +21,8 @@ export class EasyDraw {
     this.wbHandler = new WBHandler({'canvas': this.canvas})
     this.drawType = 4
     this.curShape = null
+    this.selectBorder = null
+    this.downX = this.downY = 0
     this.bindWBHandlerEvent()
     console.log('EasyDraw...')
   }
@@ -27,26 +31,83 @@ export class EasyDraw {
     this.wbHandler.down = (e) => {
       console.log('down x:' + e.x + ' y: ' + e.y)
       this.curDrawId++
-      let shape = this.createShape(e.x, e.y)
-      this.addChild(shape)
-      this.curShape = shape
+      if (this.drawType === 5) {
+        if (this.isDownInSelectShape(e.x, e.y)) {
+          // 移动操作
+          this.downX = e.x
+          this.downY = e.y
+          this.drawType = 6
+        } else {
+          let shape = this.createShape(e.x, e.y)
+          this.selectBorder = shape
+          this.selectBorder.setContent(this.context)
+          this.curShape = null
+        }
+      } else if (this.drawType === 6) {
+        // 移动操作
+        this.downX = e.x
+        this.downY = e.y
+      } else {
+        let shape = this.createShape(e.x, e.y)
+        this.addChild(shape)
+        this.curShape = shape
+      }
     }
 
     this.wbHandler.move = (e) => {
       console.log('move x:' + e.x + ' y: ' + e.y)
       if (this.curShape) {
         this.curShape.updateData(e)
-        this.update()
+      } else if (this.selectBorder) {
+        this.selectBorder.updateData(e)
+      } else if (this.drawType === 6) {
+        let delteX = e.x - this.downX
+        let delteY = e.y - this.downY
+        this.downY = e.y
+        this.downX = e.x
+        this.moveSelectShape(delteX, delteY)
       }
+      this.update()
     }
 
     this.wbHandler.up = (e) => {
       console.log('up x:' + e.x + ' y: ' + e.y)
       if (this.curShape) {
         this.curShape.updateData(e)
-        this.update()
+      } else if (this.selectBorder) {
+        this.selectBorder.updateData(e)
+        this.showSelectBoderShape()
+      } else if (this.drawType === 6) {
+        this.drawType = 5
+      }
+      this.selectBorder = null
+      this.curShape = null
+      this.update()
+    }
+  }
+  // 判断点是否在选中的图形里面
+  isDownInSelectShape (x, y) {
+    for (let i = 0; i < this.children.length; i++) {
+      let item = this.children[i]
+      if (item.checkIn(x, y)) {
+        return true
       }
     }
+    return false
+  }
+
+  // 移动选中的点
+  moveSelectShape (delteX, delteY) {
+    this.children.map((item, index) => {
+      item.moveShape(delteX, delteY)
+    })
+  }
+
+  // 显示选中的图形
+  showSelectBoderShape () {
+    this.children.map((item, index) => {
+      item.checkSelect(this.selectBorder.x, this.selectBorder.y, this.selectBorder.moveX, this.selectBorder.moveY)
+    })
   }
 
   // 添加元素
@@ -83,13 +144,34 @@ export class EasyDraw {
     this.children.map((item, index) => {
       item.render()
     })
+    if (this.selectBorder) {
+      this.selectBorder.render()
+      console.log('selectBorder.render()')
+    }
     // this.context.draw()
   }
 
   setShapeType (type) {
-    this.drawType = type
+    if (type === 7) {
+      this.removeSelectShape()
+    } else {
+      this.drawType = type
+    }
   }
 
+  // 删除被选中的图形
+  removeSelectShape () {
+    let newData = []
+    this.children.map((item, index) => {
+      if (!item.selected) {
+        newData.push(item)
+      }
+    })
+    this.children = newData
+    this.update()
+  }
+
+  // 创建图形
   createShape (x, y) {
     if (this.drawType === 0) {
       let line = new Line({
@@ -145,6 +227,17 @@ export class EasyDraw {
         strokeStyle: 'red'
       })
       return rectangle
+    } else if (this.drawType === 5) {
+      let selectBorder = new SelectBorder({
+        id: '1',
+        x: x,
+        y: y,
+        moveX: x,
+        moveY: y,
+        lineWidth: 3,
+        strokeStyle: 'red'
+      })
+      return selectBorder
     }
   }
 }

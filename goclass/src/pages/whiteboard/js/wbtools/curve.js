@@ -42,4 +42,14 @@ export class Curve extends Shape {
     this.context.restore()
     super.renderSelected()
   }
+
+  moveShape (delteX, delteY) {
+    super.moveShape(delteX, delteY)
+    if (this.selected) {
+      this.datas.map((item, index) => {
+        item.x = item.x + delteX
+        item.y = item.y + delteY
+      })
+    }
+  }
 }

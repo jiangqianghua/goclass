@@ -50,4 +50,11 @@ export class Circle extends Shape {
     this.context.restore()
     super.renderSelected()
   }
+
+  moveShape (delteX, delteY) {
+    super.moveShape(delteX, delteY)
+    if (this.selected) {
+      this.computerPostion()
+    }
+  }
 }

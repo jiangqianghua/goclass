@@ -1,7 +1,7 @@
 'use strict'
 // 绘制矩形
 import { Shape } from './shape.js'
-export class Rectangle extends Shape {
+export class SelectBorder extends Shape {
   constructor (property) {
     super(property)
     this.x = 0
@@ -34,21 +34,13 @@ export class Rectangle extends Shape {
   }
 
   render () {
-    console.log('rectange')
     this.context.save()
     this.context.beginPath()
-    // Shape.prototype.render.apply(this, arguments)
-    super.render()
+    this.context.lineWidth = 1
+    this.context.strokeStyle = 'gray'
+    this.context.setLineDash([25, 5])
     this.context.rect(this.nx, this.ny, this.width, this.height)
     this.context.stroke()
     this.context.restore()
-    this.renderSelected()
-  }
-
-  moveShape (delteX, delteY) {
-    super.moveShape(delteX, delteY)
-    if (this.selected) {
-      this.computerPostion()
-    }
   }
 }

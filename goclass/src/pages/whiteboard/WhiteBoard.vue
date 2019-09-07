@@ -88,5 +88,6 @@ export default {
     top: 0px
   .text
     position absolute
+    background-color transparent
 
 </style>

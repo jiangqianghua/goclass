@@ -25,15 +25,14 @@ export class Text extends Shape {
     this.context.beginPath()
     // Shape.prototype.render.apply(this, arguments)
     super.render()
-    this.context.fillText(this.text, this.x, this.y)
+    this.context.font = '14px Arial'
+    this.width = this.context.measureText(this.text).width
+    this.height = 14
+    this.moveX = this.x + this.width
+    this.moveY = this.y + this.height
+    this.context.fillText(this.text, this.x, this.y + this.height)
+    console.log('w=' + this.width + ' h=' + this.height)
     this.context.restore()
     this.renderSelected()
-  }
-
-  moveShape (delteX, delteY) {
-    super.moveShape(delteX, delteY)
-    if (this.selected) {
-      this.computerPostion()
-    }
   }
 }

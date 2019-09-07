@@ -12,9 +12,10 @@ import {Circle} from './circle'
 import {Curve} from './curve'
 import {Rectangle} from './rectangle'
 import {SelectBorder} from './selectborder'
+import {Text} from './text'
 
 export class EasyDraw {
-  constructor (stage) {
+  constructor (stage, callback) {
     this.canvas = document.getElementById(stage)
     this.context = this.canvas.getContext('2d')
     this.children = []
@@ -23,6 +24,7 @@ export class EasyDraw {
     this.curShape = null
     this.selectBorder = null
     this.downX = this.downY = 0
+    this.callback = callback
     this.bindWBHandlerEvent()
     console.log('EasyDraw...')
   }
@@ -47,6 +49,15 @@ export class EasyDraw {
         // 移动操作
         this.downX = e.x
         this.downY = e.y
+      } else if (this.drawType === 8) {
+        // 绘制文本
+        let data = this.callback(1, {x: e.x, y: e.y})
+        if (data.isDraw) {
+          let shape = this.createShape(data.x, data.y, data.text)
+          this.addChild(shape)
+          this.curShape = shape
+          this.update()
+        }
       } else {
         let shape = this.createShape(e.x, e.y)
         this.addChild(shape)
@@ -79,6 +90,8 @@ export class EasyDraw {
         this.showSelectBoderShape()
       } else if (this.drawType === 6) {
         this.drawType = 5
+      } else if (this.drawType === 8) {
+        return
       }
       this.selectBorder = null
       this.curShape = null
@@ -172,7 +185,7 @@ export class EasyDraw {
   }
 
   // 创建图形
-  createShape (x, y) {
+  createShape (x, y, param) {
     if (this.drawType === 0) {
       let line = new Line({
         id: '1',
@@ -238,6 +251,14 @@ export class EasyDraw {
         strokeStyle: 'red'
       })
       return selectBorder
+    } else if (this.drawType === 8) {
+      let text = new Text({
+        id: '1',
+        x: x,
+        y: y,
+        text: param
+      })
+      return text
     }
   }
 }
